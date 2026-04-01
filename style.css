@@ -394,8 +394,9 @@ body {
     
     .verification-header {
         top: 10px;
-        left: 10px;
-        font-size: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
     }
     
     .main-card {
@@ -428,6 +429,11 @@ body {
     
     .button-container {
         min-height: 80px;
+    }
+    
+    .dialog-content {
+        max-width: 90%;
+        margin: 0 10px;
     }
     
     .surrender-content {
