@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 按钮点击事件 - 实际点击才计数
     ageButton.addEventListener('click', handleButtonClick);
+    // 为移动端添加触摸结束事件，确保点击能触发
+    ageButton.addEventListener('touchend', handleButtonClick);
     
     // 退出按钮事件
     exitButton.addEventListener('click', handleExitClick);
@@ -161,11 +163,11 @@ function handleExitClick(event) {
 function determinePhase() {
     if (attemptCount <= 2) {
         currentPhase = 1;
-    } else if (attemptCount < 5) {
+    } else if (attemptCount <= 5) {
         currentPhase = 2;
-    } else if (attemptCount < 9) {
+    } else if (attemptCount <= 9) {
         currentPhase = 3;
-    } else if (attemptCount < 21) {
+    } else if (attemptCount <= 20) {
         currentPhase = 4;
     } else {
         currentPhase = 5;
