@@ -19,20 +19,29 @@ const resetButton = document.getElementById('resetButton');
 
 // 按钮文案库
 const buttonTexts = {
-    phase1: ["我已满18岁，进入", "确认并继续"],
-    phase2: ["再试一次？", "你确定满18了？", "年龄验证中..."],
-    phase3: ["追不上我吧~", "成年人要学会放弃", "要不你点'退出'算了？", "来呀，追我呀！"],
-    phase4: ["等等，我们聊聊", "停！有话好说", "先别急着点"],
+    phase1: ["我已满18岁，进入", "确认并继续", "进入网站", "已经成年，确认"],
+    phase2: ["再试一次？", "你确定满18了？", "年龄验证中...", "再点一次试试", "你真的满18岁了吗？", "别急，再想想"],
+    phase3: ["追不上我吧~", "成年人要学会放弃", "要不你退出算了？", "来呀，追我呀！", "你真够执着的！", "再试一次？", "就差一点了！", "加油！", "你能行的！", "我就不信你能点到我！"],
+    phase4: ["等等，我们聊聊", "且慢！有话好说", "先别急着点", "我们做个交易吧", "你为什么这么执着？", "休息一下吧", "要不我们聊聊人生？"],
     phase5: ["行吧，你赢了", "我投降", "你太执着了"]
 };
 
 // 对话框内容
 const dialogMessages = [
     "你为什么非要点击我？是因为这页只有我一个按钮吗？",
-    "说实话，有点感动，但今天真的不行。",
+    "说实话，有点感动，但今天你真的不行。",
     "你知道吗？你是我见过最有耐心的用户。",
     "要不我们做个交易？你点退出，我告诉你秘密。",
-    "好吧，我承认，你追得我有点累了..."
+    "好吧，我承认，你追得我有点累了...",
+    "你这么执着，是想要什么呢？",
+    "其实，成年人的世界里，并不是所有东西都能得到。",
+    "你知道吗？有时候放弃也是一种智慧。",
+    "我佩服你的毅力，但真的不能让你进去。",
+    "要不我们做个朋友吧？我觉得你很有趣。",
+    "你知道吗？你已经尝试了很多次了，放弃吧。",
+    "你这么执着，将来一定能成大事。",
+    "休息一下吧，按钮也需要休息。",
+    "你知道吗？你是第一个坚持这么久的用户。"
 ];
 
 // 初始化
@@ -105,9 +114,23 @@ function handleButtonClick(event) {
     // 只有在阶段5（投降）时才允许点击
     if (currentPhase === 5) {
         triggerSurrender();
+    } else if (currentPhase === 4) {
+        // 阶段4：谈判时刻
+        ageButton.textContent = "等等，我们聊聊";
+        
+        // 只在特定尝试次数时弹出对话框
+        if (attemptCount === 10 || attemptCount === 15 || attemptCount === 20) {
+            showDialog(dialogMessages[Math.floor(Math.random() * dialogMessages.length)]);
+        } else {
+            // 其他次数显示普通提示
+            const messages = ["追不上我吧~", "再来呀！", "差一点！", "好险！", "哈哈！", "你够执着的！", "再试一次？", "就差一点了！", "加油！", "你能行的！"];
+            showTemporaryMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        moveButtonToRandomPosition(event);
     } else {
         // 其他阶段点击时显示提示
-        const messages = ["追不上我吧~", "再来呀！", "差一点！", "好险！", "哈哈！"];
+        const messages = ["追不上我吧~", "再来呀！", "差一点！", "好险！", "哈哈！", "你够执着的！", "再试一次？", "就差一点了！", "加油！", "你能行的！"];
         showTemporaryMessage(messages[Math.floor(Math.random() * messages.length)]);
         
         // 点击后立即移动按钮到随机位置
@@ -121,7 +144,7 @@ function handleExitClick(event) {
     
     if (attemptCount === 0) {
         // 第一次点击退出
-        showDialog("这么快就要走？里面可是有'精彩内容'的哦~");
+        showDialog("这么快就要走？里面可是有 “精彩内容” 的哦~");
     } else if (attemptCount < 5) {
         // 中途点击退出
         showDialog("想逃？按钮都比你勇敢。再试试看？");
@@ -138,11 +161,11 @@ function handleExitClick(event) {
 function determinePhase() {
     if (attemptCount <= 2) {
         currentPhase = 1;
-    } else if (attemptCount <= 5) {
+    } else if (attemptCount < 5) {
         currentPhase = 2;
-    } else if (attemptCount <= 9) {
+    } else if (attemptCount < 9) {
         currentPhase = 3;
-    } else if (attemptCount <= 12) {
+    } else if (attemptCount < 21) {
         currentPhase = 4;
     } else {
         currentPhase = 5;
