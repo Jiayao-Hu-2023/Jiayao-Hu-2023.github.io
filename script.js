@@ -1,376 +1,419 @@
-// 语言包
-const translations = {
-    'zh-CN': {
-        'cover-title': '2026 马年大吉',
-        'cover-subtitle': '新春快乐 · 万事如意',
-        'page2-title': '节日问候',
-        'page2-content': '在这辞旧迎新的美好时刻，向您致以最诚挚的节日问候。愿您在新的一年里，事业蒸蒸日上，生活幸福美满，阖家欢乐安康！',
-        'page3-title': '新春祝福',
-        'page3-content': '马年到，好运来！愿您策马奔腾，事业有成；马到成功，财源广进；龙马精神，健康长寿；一马当先，万事顺意！',
-        'page4-title': '感恩有你',
-        'page4-content': '感恩一路有您的陪伴与支持，是您的鼓励让我不断前进。新的一年，愿我们继续携手同行，共创美好未来！',
-        'page5-title': '温馨祝福',
-        'page5-content': '愿新春的钟声带给您吉祥如意，愿新春的气息带给您健康平安，愿新春的祝福带给您幸福快乐，愿您在新的一年里心想事成，万事如意！',
-        'page6-title': '胡嘉耀 制作',
-        'page6-content': '感谢您的观看，祝您新春快乐，马年大吉！'
-    },
-    'zh-TW': {
-        'cover-title': '2026 馬年大吉',
-        'cover-subtitle': '新春快樂 · 萬事如意',
-        'page2-title': '節日問候',
-        'page2-content': '在這辭舊迎新的美好時刻，向您致以最誠摯的節日問候。願您在新的一年裡，事業蒸蒸日上，生活幸福美滿，闔家歡樂安康！',
-        'page3-title': '新春祝福',
-        'page3-content': '馬年到，好運來！願您策馬奔騰，事業有成；馬到成功，財源廣進；龍馬精神，健康長壽；一馬當先，萬事順意！',
-        'page4-title': '感恩有你',
-        'page4-content': '感恩一路有您的陪伴與支持，是您的鼓勵讓我不斷前進。新的一年，願我們繼續攜手同行，共創美好未來！',
-        'page5-title': '溫馨祝福',
-        'page5-content': '願新春的鐘聲帶給您吉祥如意，願新春的氣息帶給您健康平安，願新春的祝福帶給您幸福快樂，願您在新的一年裡心想事成，萬事如意！',
-        'page6-title': '胡嘉耀 製作',
-        'page6-content': '感謝您的觀看，祝您新春快樂，馬年大吉！'
-    },
-    'en-US': {
-        'cover-title': '2026 Year of the Horse',
-        'cover-subtitle': 'Happy New Year · All the Best',
-        'page2-title': 'Holiday Greetings',
-        'page2-content': 'In this wonderful moment of bidding farewell to the old and welcoming the new, I extend my most sincere holiday greetings to you. May your career thrive, your life be happy and fulfilling, and your family be joyful and healthy in the new year!',
-        'page3-title': 'New Year Wishes',
-        'page3-content': 'The Year of the Horse is here, bringing good luck! May you ride the horse to success in your career; may you achieve immediate success and abundant wealth; may you have the vigor of a dragon and horse for a long and healthy life; may you take the lead and have everything go your way!',
-        'page4-title': 'Grateful for You',
-        'page4-content': 'Grateful for your companionship and support along the way, it is your encouragement that keeps me moving forward. In the new year, may we continue to walk hand in hand and create a better future together!',
-        'page5-title': 'Warm Wishes',
-        'page5-content': 'May the New Year bell bring you good luck, may the New Year atmosphere bring you health and peace, may the New Year wishes bring you happiness and joy, may all your wishes come true and everything go well in the new year!',
-        'page6-title': 'Created by Jiayao Hu',
-        'page6-content': 'Thank you for watching, wishing you a happy New Year and a prosperous Year of the Horse!'
-    }
+// 全局变量
+let attemptCount = 0;
+let startTime = null;
+let isChasing = false;
+let currentPhase = 1;
+
+// DOM元素
+const ageButton = document.getElementById('ageButton');
+const attemptCounter = document.getElementById('attemptCounter');
+const attemptCountSpan = document.getElementById('attemptCount');
+const exitButton = document.getElementById('exitButton');
+const dialog = document.getElementById('dialog');
+const dialogText = document.getElementById('dialogText');
+const dialogConfirm = document.getElementById('dialogConfirm');
+const surrenderPage = document.getElementById('surrenderPage');
+const chaseTimeSpan = document.getElementById('chaseTime');
+const finalAttemptsSpan = document.getElementById('finalAttempts');
+const resetButton = document.getElementById('resetButton');
+
+// 按钮文案库
+const buttonTexts = {
+    phase1: ["我已满18岁，进入", "确认并继续"],
+    phase2: ["再试一次？", "你确定满18了？", "年龄验证中..."],
+    phase3: ["追不上我吧~", "成年人要学会放弃", "要不你点'退出'算了？", "来呀，追我呀！"],
+    phase4: ["等等，我们聊聊", "停！有话好说", "先别急着点"],
+    phase5: ["行吧，你赢了", "我投降", "你太执着了"]
 };
 
-// 当前语言
-let currentLanguage = 'zh-CN';
+// 对话框内容
+const dialogMessages = [
+    "你为什么非要点击我？是因为这页只有我一个按钮吗？",
+    "说实话，有点感动，但今天真的不行。",
+    "你知道吗？你是我见过最有耐心的用户。",
+    "要不我们做个交易？你点退出，我告诉你秘密。",
+    "好吧，我承认，你追得我有点累了..."
+];
 
-// 初始化语言
-function initLanguage() {
-    // 首先尝试从localStorage获取保存的语言
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && translations[savedLanguage]) {
-        currentLanguage = savedLanguage;
-    } else {
-        // 检测设备语言
-        const deviceLanguage = navigator.language || navigator.userLanguage;
-        if (deviceLanguage.startsWith('zh-CN') && translations['zh-CN']) {
-            currentLanguage = 'zh-CN';
-        } else if (deviceLanguage.startsWith('zh-TW') && translations['zh-TW']) {
-            currentLanguage = 'zh-TW';
-        } else if (deviceLanguage.startsWith('en') && translations['en-US']) {
-            currentLanguage = 'en-US';
-        }
-    }
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+    startTime = Date.now();
     
-    // 设置语言
-    switchLanguage(currentLanguage);
-}
-
-// 切换语言
-function switchLanguage(lang) {
-    currentLanguage = lang;
-    document.documentElement.lang = lang;
+    // 按钮鼠标悬停事件 - 只移动不计数
+    ageButton.addEventListener('mouseenter', handleButtonHover);
+    ageButton.addEventListener('touchstart', handleButtonTouch, { passive: false });
     
-    // 保存语言到localStorage
-    localStorage.setItem('language', lang);
+    // 按钮点击事件 - 实际点击才计数
+    ageButton.addEventListener('click', handleButtonClick);
     
-    // 更新页面内容
-    document.querySelectorAll('[data-lang-key]').forEach(element => {
-        const key = element.getAttribute('data-lang-key');
-        if (translations[lang][key]) {
-            element.textContent = translations[lang][key];
-        }
+    // 退出按钮事件
+    exitButton.addEventListener('click', handleExitClick);
+    
+    // 重置按钮事件
+    resetButton.addEventListener('click', resetGame);
+    
+    // 对话框确认按钮事件
+    dialogConfirm.addEventListener('click', function() {
+        dialog.classList.add('hidden');
     });
-}
-
-// 烟花效果
-function createFireworks() {
-    // 为第一页添加烟花
-    const container1 = document.getElementById('fireworks');
-    if (container1) {
-        setInterval(() => {
-            createSingleFirework(container1);
-        }, 500);
-    }
-    
-    // 为第六页添加烟花
-    const page6 = document.querySelector('.page-6');
-    if (page6) {
-        // 创建烟花容器
-        const container6 = document.createElement('div');
-        container6.className = 'fireworks-container';
-        container6.id = 'fireworks-page6';
-        page6.appendChild(container6);
-        
-        // 添加烟花效果
-        setInterval(() => {
-            createSingleFirework(container6);
-        }, 300); // 第六页烟花更密集
-    }
-}
-
-// 创建单个烟花
-function createSingleFirework(container) {
-    const firework = document.createElement('div');
-    firework.className = 'firework';
-    
-    // 随机位置
-    const x = Math.random() * 100;
-    const y = Math.random() * 100;
-    firework.style.left = `${x}%`;
-    firework.style.top = `${y}%`;
-    
-    // 随机颜色
-    const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeead', '#ff8a80', '#81c784', '#64b5f6'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    firework.style.backgroundColor = color;
-    
-    // 随机大小
-    const size = Math.random() * 10 + 5;
-    firework.style.width = `${size}px`;
-    firework.style.height = `${size}px`;
-    
-    container.appendChild(firework);
-    
-    // 动画结束后移除
-    setTimeout(() => {
-        firework.remove();
-    }, 1000);
-}
-
-// 添加春节装饰元素
-function addSpringFestivalDecorations() {
-    const pages = document.querySelectorAll('.page');
-    
-    pages.forEach((page, index) => {
-        // 添加灯笼
-        for (let i = 0; i < 4; i++) {
-            const lantern = document.createElement('div');
-            lantern.className = 'decoration';
-            lantern.innerHTML = '🏮';
-            lantern.style.fontSize = '2rem';
-            lantern.style.left = `${Math.random() * 100}%`;
-            lantern.style.top = `${Math.random() * 100}%`;
-            lantern.style.animationDelay = `${Math.random() * 5}s`;
-            lantern.style.animationDuration = `${Math.random() * 10 + 10}s`;
-            page.appendChild(lantern);
-        }
-        
-        // 添加红包
-        for (let i = 0; i < 3; i++) {
-            const redPacket = document.createElement('div');
-            redPacket.className = 'decoration';
-            redPacket.innerHTML = '🧧';
-            redPacket.style.fontSize = '1.5rem';
-            redPacket.style.left = `${Math.random() * 100}%`;
-            redPacket.style.top = `${Math.random() * 100}%`;
-            redPacket.style.animationDelay = `${Math.random() * 5}s`;
-            redPacket.style.animationDuration = `${Math.random() * 10 + 10}s`;
-            page.appendChild(redPacket);
-        }
-        
-        // 添加马年元素装饰
-        for (let i = 0; i < 2; i++) {
-            const horse = document.createElement('div');
-            horse.className = 'decoration';
-            horse.innerHTML = '🐎';
-            horse.style.fontSize = '1.5rem';
-            horse.style.left = `${Math.random() * 100}%`;
-            horse.style.top = `${Math.random() * 100}%`;
-            horse.style.animationDelay = `${Math.random() * 10 + 5}s`;
-            horse.style.animationDuration = `${Math.random() * 15 + 15}s`;
-            page.appendChild(horse);
-        }
-        
-        // 添加春节花朵装饰
-        for (let i = 0; i < 3; i++) {
-            const flower = document.createElement('div');
-            flower.className = 'decoration';
-            flower.innerHTML = '🌸';
-            flower.style.fontSize = '1rem';
-            flower.style.left = `${Math.random() * 100}%`;
-            flower.style.top = `${Math.random() * 100}%`;
-            flower.style.animationDelay = `${Math.random() * 8 + 2}s`;
-            flower.style.animationDuration = `${Math.random() * 12 + 12}s`;
-            page.appendChild(flower);
-        }
-        
-        // 根据页面索引添加不同的春节元素
-        switch (index) {
-            case 0: // 第一页：封面
-                // 添加春联
-                addCouplets(page);
-                // 添加福字
-                addFu(page);
-                break;
-            case 1: // 第二页：节日问候
-                // 添加包饺子
-                addDumplings(page);
-                // 添加书法
-                addCalligraphy(page, '春节快乐');
-                break;
-            case 2: // 第三页：祝福语
-                // 添加福字
-                addFu(page);
-                // 添加书法
-                addCalligraphy(page, '马年大吉');
-                break;
-            case 3: // 第四页：感恩有你
-                // 添加包饺子
-                addDumplings(page);
-                // 添加书法
-                addCalligraphy(page, '感恩有你');
-                break;
-            case 4: // 第五页：温馨祝福
-                // 添加春联
-                addCouplets(page);
-                // 添加书法
-                addCalligraphy(page, '万事如意');
-                break;
-            case 5: // 第六页：制作信息
-                // 添加福字
-                addFu(page);
-                // 添加书法
-                addCalligraphy(page, '新春快乐');
-                break;
-        }
-    });
-}
-
-// 添加春联
-function addCouplets(page) {
-    // 左边春联
-    const coupletLeft = document.createElement('div');
-    coupletLeft.className = 'couplet couplet-left';
-    coupletLeft.textContent = '新春大吉鸿运到\n马年如意福临门';
-    page.appendChild(coupletLeft);
-    
-    // 右边春联
-    const coupletRight = document.createElement('div');
-    coupletRight.className = 'couplet couplet-right';
-    coupletRight.textContent = '一帆风顺年年好\n万事如意步步高';
-    page.appendChild(coupletRight);
-}
-
-// 添加福字
-function addFu(page) {
-    const fu = document.createElement('div');
-    fu.className = 'fu';
-    fu.innerHTML = '福';
-    fu.style.top = `${Math.random() * 30 + 10}%`;
-    fu.style.right = `${Math.random() * 20 + 5}%`;
-    fu.style.animationDelay = `${Math.random() * 5}s`;
-    page.appendChild(fu);
-    
-    // 添加多个小福字
-    for (let i = 0; i < 3; i++) {
-        const smallFu = document.createElement('div');
-        smallFu.className = 'fu';
-        smallFu.innerHTML = '福';
-        smallFu.style.fontSize = '1.5rem';
-        smallFu.style.left = `${Math.random() * 100}%`;
-        smallFu.style.top = `${Math.random() * 100}%`;
-        smallFu.style.animationDelay = `${Math.random() * 10 + 5}s`;
-        smallFu.style.animationDuration = `${Math.random() * 10 + 15}s`;
-        page.appendChild(smallFu);
-    }
-}
-
-// 添加包饺子
-function addDumplings(page) {
-    for (let i = 0; i < 5; i++) {
-        const dumpling = document.createElement('div');
-        dumpling.className = 'dumpling';
-        dumpling.innerHTML = '🥟';
-        dumpling.style.left = `${Math.random() * 100}%`;
-        dumpling.style.top = `${Math.random() * 100}%`;
-        dumpling.style.animationDelay = `${Math.random() * 3}s`;
-        dumpling.style.animationDuration = `${Math.random() * 2 + 2}s`;
-        page.appendChild(dumpling);
-    }
-}
-
-// 添加书法
-function addCalligraphy(page, text) {
-    const calligraphy = document.createElement('div');
-    calligraphy.className = 'calligraphy';
-    calligraphy.textContent = text;
-    calligraphy.style.left = `${Math.random() * 60 + 20}%`;
-    calligraphy.style.top = `${Math.random() * 60 + 20}%`;
-    calligraphy.style.animationDelay = `${Math.random() * 5}s`;
-    page.appendChild(calligraphy);
-}
-
-// 增强滑动翻页体验
-function enhanceScrollExperience() {
-    const container = document.querySelector('.page-container');
-    
-    // 禁止水平滚动
-    container.addEventListener('wheel', (e) => {
-        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-            e.preventDefault();
-        }
-    });
-    
-    // 禁止触摸设备的水平滑动
-    let startX, startY;
-    container.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-    });
-    
-    container.addEventListener('touchmove', (e) => {
-        if (!startX || !startY) return;
-        
-        const currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-        
-        const diffX = Math.abs(currentX - startX);
-        const diffY = Math.abs(currentY - startY);
-        
-        if (diffX > diffY) {
-            e.preventDefault();
-        }
-        
-        startX = null;
-        startY = null;
-    });
-}
-
-// 页面加载完成后执行
-window.addEventListener('DOMContentLoaded', () => {
-    // 初始化语言（检测设备语言并从localStorage恢复）
-    initLanguage();
-    
-    // 创建烟花效果
-    createFireworks();
-    
-    // 添加春节装饰
-    addSpringFestivalDecorations();
-    
-    // 增强滑动体验
-    enhanceScrollExperience();
 });
 
-// 添加CSS动画关键帧
+// 处理按钮悬停（鼠标）- 只移动不计数
+function handleButtonHover(event) {
+    if (isChasing) return;
+    
+    isChasing = true;
+    document.body.classList.add('chasing');
+    
+    // 执行移动动作（不计数）
+    moveButtonRandomly(event);
+    
+    // 短暂延迟后重置追逐状态
+    setTimeout(() => {
+        isChasing = false;
+        document.body.classList.remove('chasing');
+    }, 300);
+}
+
+// 处理按钮触摸（移动端）- 只移动不计数
+function handleButtonTouch(event) {
+    event.preventDefault();
+    if (isChasing) return;
+    
+    isChasing = true;
+    
+    // 执行移动动作（不计数）
+    moveButtonRandomly(event);
+    
+    setTimeout(() => {
+        isChasing = false;
+    }, 300);
+}
+
+// 处理按钮点击 - 实际点击才计数
+function handleButtonClick(event) {
+    event.preventDefault();
+    
+    // 增加尝试次数
+    attemptCount++;
+    attemptCountSpan.textContent = attemptCount;
+    
+    // 根据尝试次数确定阶段
+    determinePhase();
+    
+    // 只有在阶段5（投降）时才允许点击
+    if (currentPhase === 5) {
+        triggerSurrender();
+    } else {
+        // 其他阶段点击时显示提示
+        const messages = ["追不上我吧~", "再来呀！", "差一点！", "好险！", "哈哈！"];
+        showTemporaryMessage(messages[Math.floor(Math.random() * messages.length)]);
+        
+        // 点击后立即移动按钮到随机位置
+        moveButtonToRandomPosition(event);
+    }
+}
+
+// 处理退出按钮点击
+function handleExitClick(event) {
+    event.preventDefault();
+    
+    if (attemptCount === 0) {
+        // 第一次点击退出
+        showDialog("这么快就要走？里面可是有'精彩内容'的哦~");
+    } else if (attemptCount < 5) {
+        // 中途点击退出
+        showDialog("想逃？按钮都比你勇敢。再试试看？");
+    } else {
+        // 多次尝试后点击退出
+        showDialog("退出按钮都被你点了，看来你是真的不想看。好吧，其实也没什么秘密。");
+        setTimeout(() => {
+            triggerSurrender();
+        }, 3000);
+    }
+}
+
+// 确定当前阶段
+function determinePhase() {
+    if (attemptCount <= 2) {
+        currentPhase = 1;
+    } else if (attemptCount <= 5) {
+        currentPhase = 2;
+    } else if (attemptCount <= 9) {
+        currentPhase = 3;
+    } else if (attemptCount <= 12) {
+        currentPhase = 4;
+    } else {
+        currentPhase = 5;
+    }
+}
+
+// 执行阶段对应的动作
+function executePhaseAction(event) {
+    const buttonRect = ageButton.getBoundingClientRect();
+    const containerRect = document.querySelector('.button-container').getBoundingClientRect();
+    
+    switch (currentPhase) {
+        case 1: // 阶段1：轻微闪躲
+            phase1Action(event, buttonRect, containerRect);
+            break;
+        case 2: // 阶段2：明显跳跃
+            phase2Action(event, buttonRect, containerRect);
+            break;
+        case 3: // 阶段3：复杂移动
+            phase3Action(event, buttonRect, containerRect);
+            break;
+        case 4: // 阶段4：谈判时刻
+            phase4Action(event, buttonRect, containerRect);
+            break;
+        case 5: // 阶段5：最终投降
+            phase5Action();
+            break;
+    }
+    
+    // 更新按钮文案
+    updateButtonText();
+}
+
+// 阶段1动作：轻微闪躲
+function phase1Action(event, buttonRect, containerRect) {
+    ageButton.classList.add('shake');
+    setTimeout(() => ageButton.classList.remove('shake'), 300);
+}
+
+// 阶段2动作：明显跳跃
+function phase2Action(event, buttonRect, containerRect) {
+    ageButton.classList.add('jump');
+    setTimeout(() => ageButton.classList.remove('jump'), 200);
+}
+
+// 阶段3动作：复杂移动
+function phase3Action(event, buttonRect, containerRect) {
+    executeRandomMove();
+}
+
+// 阶段4动作：谈判时刻
+function phase4Action(event, buttonRect, containerRect) {
+    if (attemptCount === 8) {
+        // 第一次进入阶段4时显示对话框
+        setTimeout(() => {
+            showDialog(dialogMessages[Math.floor(Math.random() * dialogMessages.length)]);
+        }, 300);
+    }
+    
+    ageButton.classList.add('talk');
+    setTimeout(() => ageButton.classList.remove('talk'), 400);
+}
+
+// 阶段5动作：最终投降
+function phase5Action() {
+    ageButton.classList.add('surrender');
+    setTimeout(() => {
+        triggerSurrender();
+    }, 600);
+}
+
+// 移动按钮到随机位置（点击时调用）
+function moveButtonToRandomPosition(event) {
+    if (isChasing) return;
+    
+    isChasing = true;
+    
+    // 获取按钮容器尺寸
+    const containerRect = document.querySelector('.button-container').getBoundingClientRect();
+    const buttonRect = ageButton.getBoundingClientRect();
+    
+    // 限制移动范围在按钮容器内
+    const containerWidth = containerRect.width;
+    const containerHeight = containerRect.height;
+    const buttonWidth = buttonRect.width;
+    const buttonHeight = buttonRect.height;
+    
+    // 计算可移动范围（确保按钮在容器内）
+    const maxX = (containerWidth - buttonWidth) / 2;
+    const maxY = (containerHeight - buttonHeight) / 2;
+    
+    // 生成随机位置（在容器范围内）
+    const randomX = Math.random() * maxX * 2 - maxX;
+    const randomY = Math.random() * maxY * 2 - maxY;
+    
+    // 随机大小变化（0.8倍到1.2倍）
+    const randomScale = 0.8 + Math.random() * 0.4;
+    
+    // 随机字体大小变化（14px到20px）
+    const randomFontSize = 14 + Math.random() * 6;
+    
+    // 应用随机变换
+    ageButton.style.transform = `translate(${randomX}px, ${randomY}px) scale(${randomScale})`;
+    ageButton.style.fontSize = `${randomFontSize}px`;
+    ageButton.style.position = 'absolute';
+    ageButton.style.left = '50%';
+    ageButton.style.top = '0';
+    ageButton.style.zIndex = '10';
+    
+    // 添加平滑过渡
+    ageButton.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    
+    // 更新按钮文案
+    updateButtonText();
+    
+    setTimeout(() => {
+        isChasing = false;
+    }, 300);
+}
+
+// 随机移动按钮（悬停时调用）
+function moveButtonRandomly(event) {
+    if (isChasing) return;
+    
+    isChasing = true;
+    
+    const buttonRect = ageButton.getBoundingClientRect();
+    const containerRect = document.querySelector('.button-container').getBoundingClientRect();
+    
+    // 根据阶段决定移动幅度（限制在容器范围内）
+    let moveDistance;
+    if (attemptCount <= 2) moveDistance = 30;
+    else if (attemptCount <= 4) moveDistance = 60;
+    else if (attemptCount <= 7) moveDistance = 90;
+    else moveDistance = 120;
+    
+    // 限制移动距离不超过容器范围
+    const containerWidth = containerRect.width;
+    const buttonWidth = buttonRect.width;
+    const maxAllowedDistance = (containerWidth - buttonWidth) / 2 - 10;
+    moveDistance = Math.min(moveDistance, maxAllowedDistance);
+    
+    const newX = getRandomPosition(buttonRect, containerRect, moveDistance);
+    const newY = Math.random() > 0.5 ? moveDistance/3 : -moveDistance/3;
+    
+    ageButton.style.setProperty('--runaway-x', newX + 'px');
+    ageButton.style.setProperty('--runaway-y', newY + 'px');
+    ageButton.classList.add('runaway');
+    
+    setTimeout(() => {
+        ageButton.classList.remove('runaway');
+        isChasing = false;
+    }, 250);
+}
+
+// 获取随机位置
+function getRandomPosition(buttonRect, containerRect, maxDistance) {
+    const containerWidth = containerRect.width;
+    const buttonWidth = buttonRect.width;
+    const maxX = (containerWidth - buttonWidth) / 2;
+    
+    // 确保移动幅度足够大
+    const sign = Math.random() > 0.5 ? 1 : -1;
+    const newX = sign * (maxX * 0.8); // 使用80%的最大范围
+    
+    return newX;
+}
+
+// 更新按钮文案
+function updateButtonText() {
+    const texts = buttonTexts['phase' + currentPhase];
+    const randomText = texts[Math.floor(Math.random() * texts.length)];
+    ageButton.textContent = randomText;
+}
+
+// 显示对话框
+function showDialog(message) {
+    dialogText.textContent = message;
+    dialog.classList.remove('hidden');
+}
+
+// 显示临时消息
+function showTemporaryMessage(message) {
+    const tempMsg = document.createElement('div');
+    tempMsg.textContent = message;
+    
+    // 获取按钮当前位置
+    const buttonRect = ageButton.getBoundingClientRect();
+    
+    // 计算消息位置（按钮上方）
+    const messageTop = buttonRect.top - 40;
+    const messageLeft = buttonRect.left + buttonRect.width / 2;
+    
+    // 设置消息位置
+    tempMsg.style.cssText = `
+        position: fixed;
+        top: ${messageTop}px;
+        left: ${messageLeft}px;
+        transform: translateX(-50%);
+        background: rgba(60, 60, 60, 0.95);
+        color: #ccc;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 1000;
+        white-space: nowrap;
+        animation: messageFade 2s ease-in-out;
+    `;
+    
+    document.body.appendChild(tempMsg);
+    
+    setTimeout(() => {
+        if (document.body.contains(tempMsg)) {
+            document.body.removeChild(tempMsg);
+        }
+    }, 2000);
+}
+
+// 触发投降页面
+function triggerSurrender() {
+    const chaseTime = Math.floor((Date.now() - startTime) / 1000);
+    chaseTimeSpan.textContent = chaseTime;
+    finalAttemptsSpan.textContent = attemptCount;
+    
+    surrenderPage.classList.remove('hidden');
+    setTimeout(() => {
+        surrenderPage.classList.add('visible');
+    }, 100);
+}
+
+// 重置游戏
+function resetGame() {
+    attemptCount = 0;
+    currentPhase = 1;
+    startTime = Date.now();
+    
+    // 重置UI
+    attemptCountSpan.textContent = '0';
+    attemptCounter.classList.remove('visible');
+    ageButton.textContent = '我已满18岁，进入';
+    ageButton.classList.remove('surrender');
+    
+    // 隐藏投降页面
+    surrenderPage.classList.remove('visible');
+    setTimeout(() => {
+        surrenderPage.classList.add('hidden');
+    }, 500);
+    
+    // 重置按钮位置和样式
+    ageButton.style.transform = 'translateX(-50%)';
+    ageButton.style.fontSize = '18px';
+    ageButton.style.padding = '15px 30px';
+    
+    // 移除所有CSS变量
+    ageButton.style.removeProperty('--random-x');
+    ageButton.style.removeProperty('--random-y');
+    ageButton.style.removeProperty('--random-scale');
+    ageButton.style.removeProperty('--random-rotate');
+    ageButton.style.removeProperty('--random-font-size');
+    ageButton.style.removeProperty('--random-padding-vertical');
+    ageButton.style.removeProperty('--random-padding-horizontal');
+}
+
+// 添加CSS动画
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes explode {
-        0% {
-            transform: scale(0);
-            opacity: 1;
-        }
-        50% {
-            transform: scale(2);
-            opacity: 0.8;
-        }
-        100% {
-            transform: scale(0);
-            opacity: 0;
-        }
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 `;
 document.head.appendChild(style);
