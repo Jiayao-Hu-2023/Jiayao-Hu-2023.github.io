@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 按钮点击事件 - 实际点击才计数
     ageButton.addEventListener('click', handleButtonClick);
+    // 为移动端添加触摸结束事件，确保点击能触发
+    ageButton.addEventListener('touchend', handleButtonClick);
     
     // 退出按钮事件
     exitButton.addEventListener('click', handleExitClick);
@@ -77,7 +79,6 @@ function handleButtonHover(event) {
 
 // 处理按钮触摸（移动端）- 只移动不计数
 function handleButtonTouch(event) {
-    event.preventDefault();
     if (isChasing) return;
     
     isChasing = true;
