@@ -30,8 +30,7 @@ body {
 .verification-header {
     position: absolute;
     top: 20px;
-    left: 0;
-    right: 0;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,6 +38,7 @@ body {
     font-size: 24px;
     font-weight: 700;
     z-index: 10;
+    margin: 0 auto;
 }
 
 .lock-icon {
@@ -397,13 +397,13 @@ body {
     
     .verification-header {
         top: 10px;
-        left: 0;
-        right: 0;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         font-size: 20px;
+        margin: 0 auto;
     }
     
     .main-card {
