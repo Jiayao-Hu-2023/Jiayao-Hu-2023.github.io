@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 按钮鼠标悬停事件 - 只移动不计数
     ageButton.addEventListener('mouseenter', handleButtonHover);
-    ageButton.addEventListener('touchstart', handleButtonTouch, { passive: false });
+    ageButton.addEventListener('touchstart', handleButtonTouch, { passive: true });
     
     // 按钮点击事件 - 实际点击才计数
     ageButton.addEventListener('click', handleButtonClick);
@@ -81,14 +81,44 @@ function handleButtonHover(event) {
 function handleButtonTouch(event) {
     if (isChasing) return;
     
-    isChasing = true;
+    // 记录触摸开始位置
+    const startX = event.touches[0].clientX;
+    const startY = event.touches[0].clientY;
     
-    // 执行移动动作（不计数）
-    moveButtonRandomly(event);
+    // 添加触摸移动事件监听器
+    const handleTouchMove = (moveEvent) => {
+        const currentX = moveEvent.touches[0].clientX;
+        const currentY = moveEvent.touches[0].clientY;
+        
+        // 计算移动距离
+        const distance = Math.sqrt(
+            Math.pow(currentX - startX, 2) + Math.pow(currentY - startY, 2)
+        );
+        
+        // 如果移动距离超过10px，认为是移动操作
+        if (distance > 10) {
+            isChasing = true;
+            moveButtonRandomly(event);
+            
+            setTimeout(() => {
+                isChasing = false;
+            }, 300);
+            
+            // 移除移动事件监听器
+            ageButton.removeEventListener('touchmove', handleTouchMove);
+        }
+    };
     
-    setTimeout(() => {
-        isChasing = false;
-    }, 300);
+    // 添加触摸移动事件监听器
+    ageButton.addEventListener('touchmove', handleTouchMove, { passive: true });
+    
+    // 添加触摸结束事件监听器，清理事件
+    const handleTouchEnd = () => {
+        ageButton.removeEventListener('touchmove', handleTouchMove);
+        ageButton.removeEventListener('touchend', handleTouchEnd);
+    };
+    
+    ageButton.addEventListener('touchend', handleTouchEnd);
 }
 
 // 处理按钮点击 - 实际点击才计数
