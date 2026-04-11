@@ -1,28 +1,30 @@
 # ClickHub
 
+[中文版本](./README_zh-CN.md) | English Version
 
-## 嘿，朋友！👋
 
-这是个假的成人网站（别紧张，真的是假的！），就是个愚人节小玩笑，逗大家乐呵乐呵的。
+## Hey there, buddy! 👋
 
-## 这玩意儿是啥？
+This is a FAKE adult website (relax, it's totally fake!)—just an April Fools' prank to make you laugh.
 
-简单来说，这是个整蛊页面——你看到一个橙色按钮，想点它对吧？但它会到处跑，就是不让你点到。点得越多，它越调皮，还会跟你“聊天”，最后被你烦得不行了就“投降”，显示个小彩蛋。
+## What's this thing?
 
-## 咋玩？
+Basically, it's a little trick page—you see an orange button and want to click it, right? But it moves around and avoids your clicks. The more you try, the more playful it gets, eventually "surrendering" and showing a little easter egg.
 
-1. 打开页面，看到那个橙色的按钮了吗？
-2. 试着点它，它会到处躲
-3. 点个十几次，它会开始跟你“谈判”
-4. 坚持到底，它最后会投降，给你看个小惊喜
+## How to play?
 
-## 有啥好玩的？
+1. Open the page, spot that orange button
+2. Try to click it—watch it run away
+3. After 10+ clicks, it'll start "negotiating" with you
+4. Keep going, and it'll eventually surrender with a little surprise
 
-- 按钮会根据你的点击次数变“脾气”
-- 支持13种语言，自动适配你手机的系统语言
-- 响应式设计，电脑手机都能玩
-- 最后有个小成就系统，记录你的“追逐”成绩
+## Cool features?
 
-## 重要提醒！
+- The button gets "sassier" the more you click
+- Supports 13 languages, auto-detects your system language
+- Responsive design, works on both desktop and mobile
+- Has a little achievement system to track your "chasing" stats
 
-这真的不是成人网站，就是个恶作剧，别当真哈！
+## Important note!
+
+This is NOT a real adult website—just a silly prank, don't take it seriously!
