@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Lotto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container" id="gameContainer">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-text">CYBER</span>
+                <span class="logo-accent">LOTTO</span>
+            </div>
+            <div class="header-right">
+                <div class="language-switcher">
+                    <select id="languageSelect" class="language-select">
+                        <option value="zh-Hans">简体中文</option>
+                        <option value="zh-Hant">繁體中文</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="asset-display">
+                    <span class="asset-label" data-i18n="header.asset.label">资产</span>
+                    <span class="asset-value" id="assetValue">20</span>
+                    <span class="asset-unit" data-i18n="header.asset.unit">点</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="lottery-area" id="lotteryArea">
+                <div class="ball-pool red-pool">
+                    <h2 class="pool-title" data-i18n="lottery.red_pool.title">红球区</h2>
+                    <span class="selected-count-label" data-i18n="lottery.red_pool.selected">已选</span>
+                    <span class="selected-count" id="redCount">0</span>/6
+                    <div class="balls-grid" id="redBalls">
+                    </div>
+                </div>
+                <div class="ball-pool blue-pool">
+                    <h2 class="pool-title" data-i18n="lottery.blue_pool.title">蓝球区</h2>
+                    <span class="selected-count-label" data-i18n="lottery.blue_pool.selected">已选</span>
+                    <span class="selected-count" id="blueCount">0</span>/1
+                    <div class="balls-grid" id="blueBalls">
+                    </div>
+                </div>
+            </section>
+
+            <section class="bet-controls">
+                <div class="selected-preview">
+                    <div class="preview-section">
+                        <span class="preview-label" data-i18n="bet_controls.preview.red_label">红球:</span>
+                        <div class="preview-balls" id="previewRedBalls"></div>
+                    </div>
+                    <div class="preview-section">
+                        <span class="preview-label" data-i18n="bet_controls.preview.blue_label">蓝球:</span>
+                        <div class="preview-balls" id="previewBlueBalls"></div>
+                    </div>
+                </div>
+
+                <div class="multiplier-control">
+                    <span class="control-label" data-i18n="bet_controls.multiplier.label">倍数:</span>
+                    <div class="multiplier-buttons">
+                        <button class="multi-btn" id="multiMinus">-</button>
+                        <span class="multi-value" id="multiValue">1</span>
+                        <button class="multi-btn" id="multiPlus">+</button>
+                    </div>
+                </div>
+
+                <div class="bet-info">
+                    <span class="info-item" data-i18n="bet_controls.info.notes">注数:</span>
+                    <span id="noteCount">0</span>
+                    <span class="info-item" data-i18n="bet_controls.info.cost">花费:</span>
+                    <span id="totalCost">0</span>
+                    <span data-i18n="header.asset.unit">点</span>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-clear" id="clearBtn" data-i18n="bet_controls.buttons.clear">清空</button>
+                    <button class="btn btn-random" id="randomBtn" data-i18n="bet_controls.buttons.random">机选</button>
+                    <button class="btn btn-order" id="orderBtn" disabled data-i18n="bet_controls.buttons.order">生成订单</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="draw-area" id="drawArea" style="display: none;">
+        <header class="draw-header">
+            <div class="draw-title">
+                <span class="period" data-i18n="draw.title">第</span> 2024001 <span data-i18n="draw.title_suffix">期</span>
+                <span class="status" id="drawStatus" data-i18n="draw.status">正在摇奖中...</span>
+            </div>
+        </header>
+
+        <main class="draw-main">
+            <div class="draw-machines">
+                <div class="machine red-machine">
+                    <div class="machine-body">
+                        <div class="machine-glass">
+                            <div class="balls-container" id="redMachineBalls"></div>
+                        </div>
+                        <div class="machine-spout" id="redSpout"></div>
+                    </div>
+                    <div class="machine-label" data-i18n="draw.red_machine">红球机</div>
+                </div>
+                <div class="machine blue-machine">
+                    <div class="machine-body">
+                        <div class="machine-glass">
+                            <div class="balls-container" id="blueMachineBalls"></div>
+                        </div>
+                        <div class="machine-spout" id="blueSpout"></div>
+                    </div>
+                    <div class="machine-label" data-i18n="draw.blue_machine">蓝球机</div>
+                </div>
+            </div>
+
+            <div class="drawn-balls">
+                <div class="drawn-section">
+                    <span class="drawn-label" data-i18n="draw.result.red_label">红球结果</span>
+                    <div class="drawn-balls-row" id="drawnRedBalls"></div>
+                </div>
+                <div class="drawn-section">
+                    <span class="drawn-label" data-i18n="draw.result.blue_label">蓝球结果</span>
+                    <div class="drawn-balls-row" id="drawnBlueBall"></div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText"></div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" style="display: none;">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle"></span>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <div class="result-modal" id="resultModal" style="display: none;">
+        <div class="result-content">
+            <div class="result-header">
+                <h2 class="result-title" data-i18n="result.title">开奖结果</h2>
+            </div>
+            <div class="result-comparison">
+                <div class="comparison-section">
+                    <span class="comparison-label" data-i18n="result.your_numbers">您的号码</span>
+                    <div class="comparison-balls">
+                        <div class="comparison-red" id="userRedBalls"></div>
+                        <div class="comparison-blue" id="userBlueBalls"></div>
+                    </div>
+                </div>
+                <div class="comparison-section">
+                    <span class="comparison-label" data-i18n="result.winning_numbers">开奖号码</span>
+                    <div class="comparison-balls">
+                        <div class="comparison-red" id="winningRedBalls"></div>
+                        <div class="comparison-blue" id="winningBlueBalls"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="result-info">
+                <div class="prize-info">
+                    <span class="prize-level-label" data-i18n="result.prize.level">奖项:</span>
+                    <span class="prize-level" id="prizeLevel"></span>
+                    <span class="prize-count-label" data-i18n="result.prize.count">中奖注数:</span>
+                    <span id="prizeCount">0</span>
+                </div>
+                <div class="prize-amount">
+                    <span class="amount-label" data-i18n="result.prize.amount">奖金:</span>
+                    <span class="amount-value" id="prizeAmount">0</span>
+                    <span class="amount-unit" data-i18n="result.prize.unit">点</span>
+                </div>
+            </div>
+            <div class="result-action">
+                <button class="btn btn-primary" id="backBtn" data-i18n="result.button">返回选号</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="i18n.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

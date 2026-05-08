@@ -1,0 +1,98 @@
+{
+    "header": {
+        "logo": {
+            "text": "CYBER",
+            "accent": "LOTTO"
+        },
+        "asset": {
+            "label": "资产",
+            "unit": "点"
+        }
+    },
+    "lottery": {
+        "red_pool": {
+            "title": "红球区",
+            "selected": "已选"
+        },
+        "blue_pool": {
+            "title": "蓝球区",
+            "selected": "已选"
+        }
+    },
+    "bet_controls": {
+        "preview": {
+            "red_label": "红球:",
+            "blue_label": "蓝球:"
+        },
+        "multiplier": {
+            "label": "倍数:"
+        },
+        "info": {
+            "notes": "注数:",
+            "cost": "花费:"
+        },
+        "buttons": {
+            "clear": "清空",
+            "random": "机选",
+            "order": "生成订单"
+        }
+    },
+    "draw": {
+        "title": "第",
+        "title_suffix": "期",
+        "status": "摇奖进行中...",
+        "red_machine": "红球机",
+        "blue_machine": "蓝球机",
+        "result": {
+            "red_label": "红球结果",
+            "blue_label": "蓝球结果"
+        },
+        "progress": {
+            "red": "红球第 {current}/{total} 个，距离下一个球还有 {time}s",
+            "blue": "红球摇完，准备摇蓝球..."
+        }
+    },
+    "modal": {
+        "close": "关闭",
+        "confirm": "确定",
+        "cancel": "取消"
+    },
+    "order": {
+        "title": "确认投注",
+        "red": "红球:",
+        "blue": "蓝球:",
+        "multiplier": "倍数:",
+        "notes": "注数:",
+        "cost": "花费:",
+        "confirm": "确认投注"
+    },
+    "warning": {
+        "title": "资产不足",
+        "message": "您的资产不足以支付 {cost} 点！请刷新页面重置资产。"
+    },
+    "result": {
+        "title": "开奖结果",
+        "your_numbers": "您的号码",
+        "winning_numbers": "开奖号码",
+        "prize": {
+            "level": "奖项",
+            "count": "中奖注数:",
+            "amount": "奖金:",
+            "unit": "点",
+            "none": "未中奖"
+        },
+        "button": "返回选号"
+    },
+    "prizes": {
+        "1": "一等奖",
+        "2": "二等奖",
+        "3": "三等奖",
+        "4": "四等奖",
+        "5": "五等奖",
+        "6": "六等奖",
+        "7": "六等奖",
+        "8": "六等奖",
+        "9": "六等奖",
+        "10": "六等奖"
+    }
+}
