@@ -2,7 +2,7 @@
 
 ## 🌐 Language Switch
 - **English Version**: This document
-- [中文版本](./README.zh.md)
+- [中文版本](./README_zh.md)
 
 ---
 
