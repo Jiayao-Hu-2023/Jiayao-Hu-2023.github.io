@@ -1,7 +1,7 @@
 # Cyber-Lotto - 赛博双色球模拟器
 
 ## 🌐 语言切换
-- [English Version](./README.en.md)
+- [English Version](./README.md)
 - **中文版本**: 本文档
 
 ---
